@@ -1,18 +1,18 @@
 import type { CardProps } from "../types/cardProps"
-export const TaskCard = ({ task, ...props }: CardProps) => {
+export const TaskCard = ({ task, ...props}: CardProps) => {
 
     const progressValue = task.progress ?? 0;
 
     const getPriorityStyles = (priority: 'HIGH' | 'MEDIUM' | 'LOW') => { 
         switch (priority) {
             case 'HIGH':
-                return 'text-red-400 border-red-400'
+                return 'text-red-400 bg-red-400/10 border-red-400'
             case 'MEDIUM':
-                return 'text-amber-400 border-amber-400'
+                return 'text-amber-400 bg-yellow-400/10 border-amber-400'
             case 'LOW':
-                return 'text-green-400 border-green-400'
+                return 'text-green-400 bg-green-400/10 border-green-400'
             default:
-                return 'text-slate-600 border-slate-200'
+                return 'text-slate-600 bg-slate-400/10 border-slate-200'
         }
     }
      
