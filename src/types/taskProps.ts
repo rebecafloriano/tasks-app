@@ -12,3 +12,5 @@ export interface CardProps {
     task: Task
 
 }
+
+export type FilterType = 'ALL'|'DONE'|'PENDING'|'HIGH'
