@@ -1,4 +1,5 @@
 import type { CardProps } from "../types/taskProps"
+import { formatDate } from "../utils/formatDate";
 export const TaskCard = ({ task, ...props }: CardProps) => {
 
     const progressValue = task.progress ?? 0;
@@ -24,7 +25,7 @@ export const TaskCard = ({ task, ...props }: CardProps) => {
             </div>
             <h3 className="font-semibold text-base mb-4">{task.title || "Fix Login Layout"}</h3>
             <div className="flex justify-between mb-1 text-xs text-slate-500">
-                <span>Due: {task.date}</span>
+                <span>Prazo: {task.date ? formatDate(task.date) : "Sem prazo"}</span>
                 <span>{task.progress}%</span>
             </div>
             <div className=" w-full h-1.5 rounded-2xl bg-slate-800">

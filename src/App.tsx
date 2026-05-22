@@ -1,39 +1,35 @@
 import { Menu } from 'lucide-react'
 import { TaskCard } from './components/TaskCard';
 import { type Task, type FilterType } from './types/taskProps';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FilterSidebar } from './components/FilterSidebar';
 import { AddTaskModal } from './components/AddTaskModal';
 
-export default function App() {
-  const [tasks, setTasks] = useState<Task[]>([
-    { id: "1", title: "Fix Login Layout", category: "Frontend Task", priority: "MEDIUM", progress: 20, date: "May 20" },
-    { id: "2", title: "Setup PostgreSQL Database", category: "Backend Task", priority: "MEDIUM", progress: 100, date: "May 22" },
-    { id: "3", title: "Design New Dashboard Dashboard", category: "UI/UX Task", priority: "LOW", progress: 15, date: "May 25" },
-    { id: "4", title: "Design New Dashboard Dashboard", category: "UI/UX Task", priority: "HIGH", progress: 60, date: "May 25" },
-    { id: "5", title: "Fix Login Layout", category: "Frontend Task", priority: "MEDIUM", progress: 20, date: "May 20" },
-    { id: "6", title: "Setup PostgreSQL Database", category: "Backend Task", priority: "MEDIUM", progress: 100, date: "May 22" },
-    { id: "7", title: "Design New Dashboard Dashboard", category: "UI/UX Task", priority: "LOW", progress: 15, date: "May 25" },
-    { id: "8", title: "Design New Dashboard Dashboard", category: "UI/UX Task", priority: "HIGH", progress: 60, date: "May 25" },
-    { id: "9", title: "Fix Login Layout", category: "Frontend Task", priority: "MEDIUM", progress: 20, date: "May 20" },
-    { id: "10", title: "Setup PostgreSQL Database", category: "Backend Task", priority: "MEDIUM", progress: 100, date: "May 22" },
-    { id: "11", title: "Design New Dashboard Dashboard", category: "UI/UX Task", priority: "LOW", progress: 15, date: "May 25" },
-    { id: "12", title: "Design New Dashboard Dashboard", category: "UI/UX Task", priority: "HIGH", progress: 60, date: "May 25" },
-    { id: "13", title: "Design New Dashboard Dashboard", category: "UI/UX Task", priority: "HIGH", progress: 60, date: "May 25" },
-    { id: "14", title: "Fix Login Layout", category: "Frontend Task", priority: "MEDIUM", progress: 20, date: "May 20" },
-    { id: "15", title: "Setup PostgreSQL Database", category: "Backend Task", priority: "MEDIUM", progress: 100, date: "May 22" },
-    { id: "16", title: "Design New Dashboard Dashboard", category: "UI/UX Task", priority: "LOW", progress: 15, date: "May 25" },
-    { id: "17", title: "Design New Dashboard Dashboard", category: "UI/UX Task", priority: "HIGH", progress: 60, date: "May 25" },
-    { id: "18", title: "Fix Login Layout", category: "Frontend Task", priority: "MEDIUM", progress: 20, date: "May 20" },
-    { id: "19", title: "Setup PostgreSQL Database", category: "Backend Task", priority: "MEDIUM", progress: 100, date: "May 22" },
-    { id: "20", title: "Design New Dashboard Dashboard", category: "UI/UX Task", priority: "LOW", progress: 15, date: "May 25" },
-    { id: "21", title: "Design New Dashboard Dashboard", category: "UI/UX Task", priority: "HIGH", progress: 60, date: "May 25" },
 
-  ])
+export default function App() {
+  const [tasks, setTasks] = useState<Task[]>(()=> {
+    const savedTasks = localStorage.getItem('@TaskFlow: tasks')
+    
+    if(savedTasks) {
+      return JSON.parse(savedTasks)
+    }
+    return [
+      { id: "1", title: "Fix Login Layout", category: "Frontend Task", priority: "MEDIUM", progress: 20, date: "2026-05-20" },
+      { id: "2", title: "Setup PostgreSQL Database", category: "Backend Task", priority: "MEDIUM", progress: 100, date: "2026-05-22" },
+      { id: "3", title: "Design New Dashboard", category: "UI/UX Task", priority: "LOW", progress: 15, date: "2026-05-25" },
+      { id: "4", title: "Develop Dashboard Metrics", category: "UI/UX Task", priority: "HIGH", progress: 60, date: "2026-05-25" },
+      { id: "5", title: "Refactor Auth Middleware", category: "Backend Task", priority: "HIGH", progress: 0, date: "2026-05-28" }
+
+    ]
+  })
+
+  useEffect(() => {
+    localStorage.setItem('@TaskFlow:tasks', JSON.stringify(tasks))
+  }, [tasks])
 
   const countDone = tasks.filter(item => item.progress === 100).length
   const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false)
-  const [isOpenModalAdd, setOpenModalAdd] = useState<boolean>(false)
+  const [isOpenModalAdd, setIsOpenModalAdd] = useState<boolean>(false)
 
   const [filter, setFilter] = useState<FilterType>('ALL')
   const filteredTasks = tasks.filter(task => {
@@ -43,12 +39,14 @@ export default function App() {
     return true
   })
 
-  const onClose = () => {
-    
-  }
 
-  const onAddTask = () => {
-
+  const handleAddTask = (newTaskData: Omit<Task, "id" | "progress">) => {
+    const finalTask: Task = {
+      ...newTaskData,
+      id: crypto.randomUUID(),
+      progress: 0
+    }
+    setTasks((prevTasks) => [finalTask, ...prevTasks])
   }
 
   return (
@@ -112,7 +110,6 @@ export default function App() {
         setFilter={setFilter}
       />
 
-      {/* MAIN TOTALMENTE CORRIGIDO PARA REALINHAR O FLEXBOX NO IPAD */}
       <main className='w-full max-w-7xl mx-auto p-7 flex-1 flex flex-col justify-between pb-28'>
 
         <div>
@@ -141,19 +138,18 @@ export default function App() {
               </div>
             )}
           </section>
-          <div className=''>
+
             <AddTaskModal
               isOpen={isOpenModalAdd}
-              onClose={onClose}
-              onAddTask={onAddTask}
+              onClose={()=>setIsOpenModalAdd(false)}
+              onAddTask={handleAddTask}
             />
 
-          </div>
           
         </div>
 
 
-        <button className='fixed bottom-22 right-4 md:bottom-24 xl:right-[calc((100vw-1280px)/2+24px)] bg-blue-600 hover:bg-blue-700 active:scale-95 rounded-full md:w-16 md:h-16 w-14 h-14 items-center justify-center shadow-2xl flex cursor-pointer z-40 transition-all'>
+        <button onClick={() => setIsOpenModalAdd(true)} className='fixed bottom-22 right-4 md:bottom-24 xl:right-[calc((100vw-1280px)/2+24px)] bg-blue-600 hover:bg-blue-700 active:scale-95 rounded-full md:w-16 md:h-16 w-14 h-14 items-center justify-center shadow-2xl flex cursor-pointer z-40 transition-all'>
           <span className='text-3xl md:text-4xl font-bold leading-none select-none -mt-0.5'>+</span>
         </button>
 
