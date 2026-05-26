@@ -1,73 +1,121 @@
-# React + TypeScript + Vite
+# 🚀 TaskFlow
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern and intuitive daily task management application built with React, TypeScript, and Vite. The project was designed to improve organization and productivity, allowing users to create, filter, and track task progress efficiently.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🔗 Live Demo
 
-## React Compiler
+The project is deployed and can be accessed online here:  
+👉 [View TaskFlow Online](https://tasks-app.vercel.app)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 📸 Project Preview
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+> 💡 **Note:**  
+> Make sure to place your screenshot with the exact name `preview.jpg` (or `.png`) in the root folder of your project so it appears here and on GitHub!
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+![Project Preview](./screen-1.png)
+![Project Preview](./screen-2.png)
+![Project Preview](./screen-3.png)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 🛠️ Technologies Used
+
+- ⚛️ **React** — Modern component-based UI with Hooks
+- 🟦 **TypeScript** — Static typing for safer and more scalable code
+- ⚡ **Vite** — Fast and optimized development environment
+- 🎨 **Tailwind CSS / CSS Modules** — Modern and responsive styling
+- ▲ **Vercel** — Deployment and hosting platform
+
+---
+
+## 📦 Features
+
+- ✨ **Task Creation**  
+  Add new tasks with titles and descriptions.
+
+- 🔍 **Advanced Filters**  
+  Filter tasks by status:
+  - All
+  - Pending
+  - Completed
+
+- 💾 **Data Persistence**  
+  Tasks remain saved locally even after refreshing the page.
+
+- 📱 **Responsive Design**  
+  Fully adaptable interface for desktop, tablet, and mobile devices.
+
+---
+
+## 🚀 Running the Project Locally
+
+If you want to download and run this project on your machine, follow the steps below:
+
+### 1️⃣ Clone the repository
+
+```bash
+git clone https://github.com/rebecafloriano/tasks-app.git
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2️⃣ Navigate to the project folder
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+cd tasks-app
 ```
+
+### 3️⃣ Install dependencies
+
+```bash
+npm install
+```
+
+### 4️⃣ Start the development server
+
+```bash
+npm run dev
+```
+
+### 5️⃣ Open in your browser
+
+Visit:
+
+```bash
+http://localhost:5173
+```
+
+---
+
+## 📂 Project Structure
+
+```bash
+tasks-app/
+├── src/
+│   ├── components/
+│   ├── pages/
+│   ├── hooks/
+│   ├── styles/
+│   └── App.tsx
+├── public/
+├── preview.jpg
+├── package.json
+└── vite.config.ts
+```
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License**.  
+Feel free to use, modify, and share it.
+
+---
+
+## 💜 Author
+
+Developed with 💜 by **Rebeca Erdman**
+
+- GitHub: [@rebecafloriano](https://github.com/rebecafloriano)
