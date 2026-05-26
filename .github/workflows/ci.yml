@@ -1,32 +1,49 @@
-name: TaskFlow CI
+name: Deploy TaskFlow to Pages
 
-# O workflow será disparado sempre que houver um push ou pull request na branch main
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    branches: [ main ] # ⚠️ Se a tua branch for master, muda para master aqui
+
+# Dá permissões especiais à Action para ler o código e publicar no Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Garante que se fizeres dois pushes seguidos, o segundo cancela o primeiro para não dar conflito
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
 
 jobs:
-  build-and-test:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps: deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-
     steps:
-      # 1. Faz o download do código do teu repositório para a máquina virtual
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      # 2. Configura o ambiente com o Node.js
-      - name: Setup Node.js
+      - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-node: 20
-          cache: 'npm' # Faz cache das dependências para o processo ser mais rápido nas próximas vezes
+          node-version: 20
+          cache: 'npm'
 
-      # 3. Instala as dependências do projeto (incluindo lucide-react, sonner, etc.)
       - name: Install dependencies
         run: npm ci
 
-      # 4. Executa o build do Vite + TypeScript para garantir que não há erros de compilação
-      - name: Build project
+      - name: Build
         run: npm run build
+
+      # ⚙️ PASSO NOVO: Prepara os ficheiros estáticos que o Vite gerou na pasta 'dist'
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './dist'
+
+      # 🚀 PASSO NOVO: Faz o deploy real para o link do teu GitHub Pages
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
