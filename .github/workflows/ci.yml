@@ -1,0 +1,49 @@
+name: Deploy TaskFlow to Pages
+
+on:
+  push:
+    branches: [ main ] # ⚠️ Se a tua branch for master, muda para master aqui
+
+# Dá permissões especiais à Action para ler o código e publicar no Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Garante que se fizeres dois pushes seguidos, o segundo cancela o primeiro para não dar conflito
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }} # 👈 CORRIGIDO: Era ':' e agora é '.'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      # ⚙️ Prepara os ficheiros estáticos que o Vite gerou na pasta 'dist'
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './dist'
+
+      # 🚀 Faz o deploy real para o link do teu GitHub Pages
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
