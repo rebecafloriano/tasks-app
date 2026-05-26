@@ -18,13 +18,9 @@ The project is deployed and can be accessed online here:
 
 <div align="center">
 
-<img src="./screen-1.png" alt="TaskFlow Preview 1" width="700"/>
-<br/><br/>
-
-<img src="./screen-2.png" alt="TaskFlow Preview 2" width="700"/>
-<br/><br/>
-
-<img src="./sreen-3.png" alt="TaskFlow Preview 3" width="700"/>
+<img src="./screen-1.png" alt="TaskFlow Preview 1" width="250"/>
+<img src="./screen-2.png" alt="TaskFlow Preview 2" width="250"/>
+<img src="./screen-3.png" alt="TaskFlow Preview 3" width="250"/>
 
 </div>
 
