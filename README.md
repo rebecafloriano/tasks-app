@@ -7,7 +7,7 @@ A modern and intuitive daily task management application built with React, TypeS
 ## 🔗 Live Demo
 
 The project is deployed and can be accessed online here:  
-👉 [View TaskFlow Online](https://tasks-app.vercel.app)
+👉 [View TaskFlow Online]([https://tasks-app.vercel.app](https://tasks-app-blue.vercel.app/))
 
 ---
 
@@ -18,7 +18,7 @@ The project is deployed and can be accessed online here:
 
 ![Project Preview](./screen-1.png)
 ![Project Preview](./screen-2.png)
-![Project Preview](./screen-3.png)
+![Project Preview](./sreen-3.png)
 
 ---
 
