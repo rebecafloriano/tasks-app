@@ -19,7 +19,7 @@ jobs:
   deploy:
     environment:
       name: github-pages
-      url: ${{ steps: deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url }} # 👈 CORRIGIDO: Era ':' e agora é '.'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -37,13 +37,13 @@ jobs:
       - name: Build
         run: npm run build
 
-      # ⚙️ PASSO NOVO: Prepara os ficheiros estáticos que o Vite gerou na pasta 'dist'
+      # ⚙️ Prepara os ficheiros estáticos que o Vite gerou na pasta 'dist'
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: './dist'
 
-      # 🚀 PASSO NOVO: Faz o deploy real para o link do teu GitHub Pages
+      # 🚀 Faz o deploy real para o link do teu GitHub Pages
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
