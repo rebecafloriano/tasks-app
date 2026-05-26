@@ -3,9 +3,9 @@ name: TaskFlow CI
 # O workflow será disparado sempre que houver um push ou pull request na branch main
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   build-and-test:
