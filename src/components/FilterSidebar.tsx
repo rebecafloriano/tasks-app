@@ -1,4 +1,4 @@
-import type { CardProps, FilterType } from "../types/taskProps";
+import type {FilterType } from "../types/taskProps";
 
 interface FilterSidebarProps {
     isOpenMenu: boolean
