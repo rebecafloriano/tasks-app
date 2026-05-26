@@ -4,21 +4,21 @@ import { type Task, type FilterType } from './types/taskProps';
 import { useState, useEffect } from 'react';
 import { FilterSidebar } from './components/FilterSidebar';
 import { AddTaskModal } from './components/AddTaskModal';
+import { Toaster, toast } from 'sonner'
 
 
 export default function App() {
-  const [tasks, setTasks] = useState<Task[]>(()=> {
-    const savedTasks = localStorage.getItem('@TaskFlow: tasks')
-    
-    if(savedTasks) {
+  const [tasks, setTasks] = useState<Task[]>(() => {
+    const savedTasks = localStorage.getItem('@TaskFlow:tasks')
+
+    if (savedTasks) {
       return JSON.parse(savedTasks)
     }
     return [
-      { id: "1", title: "Fix Login Layout", category: "Frontend Task", priority: "MEDIUM", progress: 20, date: "2026-05-20" },
-      { id: "2", title: "Setup PostgreSQL Database", category: "Backend Task", priority: "MEDIUM", progress: 100, date: "2026-05-22" },
-      { id: "3", title: "Design New Dashboard", category: "UI/UX Task", priority: "LOW", progress: 15, date: "2026-05-25" },
-      { id: "4", title: "Develop Dashboard Metrics", category: "UI/UX Task", priority: "HIGH", progress: 60, date: "2026-05-25" },
-      { id: "5", title: "Refactor Auth Middleware", category: "Backend Task", priority: "HIGH", progress: 0, date: "2026-05-28" }
+      { id: "1", title: "Fix Login Layout", category: "Frontend Task", priority: "MEDIUM", progress: 0, date: "2026-05-20" },
+      { id: "2", title: "Setup PostgreSQL Database", category: "Backend Task", priority: "MEDIUM", progress: 0, date: "2026-05-22" },
+      { id: "3", title: "Design New Dashboard", category: "UI/UX Task", priority: "LOW", progress:0, date: "2026-05-25" },
+      
 
     ]
   })
@@ -49,8 +49,39 @@ export default function App() {
     setTasks((prevTasks) => [finalTask, ...prevTasks])
   }
 
+  const handlePlusProgress = (id: string | number) => {
+    setTasks(prevTasks =>
+      prevTasks.map(task => {
+        if (task.id === id) {
+          const nextProgress = task.progress >= 100 ? 100 : task.progress + 25;
+          return { ...task, progress: nextProgress };
+        }
+        return task;
+      })
+    );
+  };
+  const handleMinusProgress = (id: string | number) => {
+    setTasks(prevTasks => prevTasks.map(task => {
+      if (task.id === id) {
+        const nextProgress = task.progress === 0 ? 0 : task.progress - 25
+        return { ...task, progress: nextProgress }
+      }
+      return task
+    }))
+  }
+
+  const handleDelete = (id: string | number) => {
+    const userConfirmed = window.confirm("Tem certeza de que quer excluir a tarefa?")
+    if (!userConfirmed) return
+
+    setTasks(prevTasks => prevTasks.filter(task => task.id !== id))
+    toast.success("Tarefa eliminada com sucesso!")
+
+  }
+
   return (
     <div className="flex flex-col bg-slate-900 text-slate-100 font-sans min-h-dvh w-full">
+      <Toaster position="top-center" richColors />
 
 
       <header className="lg:py-4 sticky top-0 z-40 backdrop-blur-md bg-slate-950/80">
@@ -123,10 +154,16 @@ export default function App() {
           <section className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 w-full'>
             {filteredTasks.length > 0 ? (
               filteredTasks.map((item) => (
-                <TaskCard key={item.id} task={item} />
+                <TaskCard
+                  key={item.id}
+                  task={item}
+                  plusProgress={handlePlusProgress}
+                  minusProgress={handleMinusProgress}
+                  onDelete={handleDelete}
+                />
               ))
             ) : (
-            
+
               <div className='col-span-full flex flex-col items-center justify-center py-12 px-4 border border-dashed border-slate-800 rounded-2xl bg-slate-950/30 text-center'>
                 <span className='text-4xl mb-3'>✨</span>
                 <h3 className='text-lg font-semibold text-slate-200 uppercase tracking-wide'>Nenhuma tarefa encontrada</h3>
@@ -139,17 +176,18 @@ export default function App() {
             )}
           </section>
 
-            <AddTaskModal
-              isOpen={isOpenModalAdd}
-              onClose={()=>setIsOpenModalAdd(false)}
-              onAddTask={handleAddTask}
-            />
+          <AddTaskModal
+            isOpen={isOpenModalAdd}
+            onClose={() => setIsOpenModalAdd(false)}
+            onAddTask={handleAddTask}
+          />
 
-          
+
         </div>
 
 
-        <button onClick={() => setIsOpenModalAdd(true)} className='fixed bottom-22 right-4 md:bottom-24 xl:right-[calc((100vw-1280px)/2+24px)] bg-blue-600 hover:bg-blue-700 active:scale-95 rounded-full md:w-16 md:h-16 w-14 h-14 items-center justify-center shadow-2xl flex cursor-pointer z-40 transition-all'>
+        <button onClick={() => setIsOpenModalAdd(true)}
+          className='fixed bottom-22 right-4 md:bottom-24 xl:right-[calc((100vw-1280px)/2+24px)] bg-blue-600 hover:bg-blue-700 active:scale-95 rounded-full md:w-16 md:h-16 w-14 h-14 items-center justify-center shadow-2xl flex cursor-pointer z-40 transition-all'>
           <span className='text-3xl md:text-4xl font-bold leading-none select-none -mt-0.5'>+</span>
         </button>
 

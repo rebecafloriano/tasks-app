@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { type Task } from "../types/taskProps"
+import { toast } from 'sonner'
 
 interface AddTaskModalProps {
     isOpen: boolean
@@ -14,19 +15,43 @@ export const AddTaskModal = ({ isOpen, onClose, onAddTask }: AddTaskModalProps) 
     const [priority, setPriority] = useState<Task["priority"]>("MEDIUM")
     const [date, setDate] = useState<Task["date"]>("")
 
+    const [titleHasError, setTitleHasError] = useState(false)
+    const [dateHasError, setDateHasError] = useState(false)
+
     if (!isOpen) return null
 
     const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement, SubmitEvent>) => {
         e.preventDefault()
-        if (!title.trim() || !date) return
 
-        onAddTask({ title, category, priority, date })
+        setTitleHasError(false)
+        setDateHasError(false)
+
+        if (!title.trim()) {
+            toast.error("O título da tarefa é obrigatório")
+            setTitleHasError(true)
+            return
+        }
+        if (!date) {
+            toast.error("O prazo da tarefa é obrigatório")
+            setDateHasError(true)
+            return
+        }
+
+        const year = date.split('-')[0];
+        if (Number(year) < 2026) {
+            toast.error("Por favor, introduz um ano válido (igual ou superior a 2026).")
+            return
+        }
+
+        onAddTask({ title: title.trim(), category, priority, date })
 
         setTitle("")
         setCategory("Frontend Task")
         setPriority("MEDIUM")
         setDate("")
         onClose()
+        setTitleHasError(false)
+        setDateHasError(false)
     }
 
     return (
@@ -46,24 +71,28 @@ export const AddTaskModal = ({ isOpen, onClose, onAddTask }: AddTaskModalProps) 
                     Nova Tarefa
                 </h2>
 
-                {/* Form com scroll interno caso o telemóvel seja muito pequeno */}
+
                 <form onSubmit={handleSubmit} className="flex flex-col gap-5 mt-4 overflow-y-auto pr-1">
 
-                    {/* INPUT TÍTULO */}
+
                     <div className="flex flex-col gap-1">
                         <label className="text-xs text-slate-300 font-bold uppercase tracking-wider" htmlFor="title">Título da Tarefa</label>
                         <input
                             id="title"
                             type="text"
-                            required
                             placeholder="Ex: Finalizar Layout de Login"
                             value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            className="text-sm bg-slate-900 border border-slate-700 leading-10 rounded-lg px-3 text-slate-100 focus:outline-hidden focus:border-yellow-500 transition-colors placeholder:text-slate-600"
+                            onChange={
+                                (e) => {
+                                    setTitle(e.target.value)
+                                    if (e.target.value.trim()) setTitleHasError(false)
+                                }}
+                            className={`text-sm bg-slate-900 border leading-10 rounded-lg px-3 text-slate-100 focus:outline-hidden  transition-colors placeholder:text-slate-600 ${titleHasError ? 'border-red-500 focus:border-red-500 bg-red-500/5' : ' border-slate-700 focus:border-yellow-500'
+                                }`}
                         />
                     </div>
 
-                    {/* CATEGORIAS (Ajustado o gap-y para quando quebrar de linha) */}
+
                     <div className="flex flex-col gap-1.5">
                         <label className="text-xs text-slate-300 font-bold uppercase tracking-wider">Categoria</label>
                         <div className="flex flex-wrap gap-x-2 gap-y-2.5">
@@ -73,14 +102,14 @@ export const AddTaskModal = ({ isOpen, onClose, onAddTask }: AddTaskModalProps) 
                                     type="button"
                                     onClick={() => setCategory(cat)}
                                     className={`uppercase px-3 py-2 text-[11px] font-bold rounded-lg border transition-all cursor-pointer ${category === cat
-                                            ? cat === "Frontend Task"
-                                                ? "bg-blue-500/20 text-blue-400 border-blue-500"
-                                                : cat === "Backend Task"
-                                                    ? "bg-amber-500/20 text-amber-400 border-amber-500"
-                                                    : cat === "UI/UX Task"
-                                                        ? "bg-purple-500/20 text-purple-400 border-purple-500"
-                                                        : "bg-emerald-500/20 text-emerald-400 border-emerald-500"
-                                            : "bg-slate-900/40 border-slate-700 text-slate-400 active:bg-slate-700"
+                                        ? cat === "Frontend Task"
+                                            ? "bg-blue-500/20 text-blue-400 border-blue-500"
+                                            : cat === "Backend Task"
+                                                ? "bg-amber-500/20 text-amber-400 border-amber-500"
+                                                : cat === "UI/UX Task"
+                                                    ? "bg-purple-500/20 text-purple-400 border-purple-500"
+                                                    : "bg-emerald-500/20 text-emerald-400 border-emerald-500"
+                                        : "bg-slate-900/40 border-slate-700 text-slate-400 active:bg-slate-700"
                                         }`}
                                 >
                                     {cat}
@@ -89,7 +118,7 @@ export const AddTaskModal = ({ isOpen, onClose, onAddTask }: AddTaskModalProps) 
                         </div>
                     </div>
 
-                    {/* PRIORIDADES (Lado a lado perfeito com flex-1) */}
+
                     <div className="flex flex-col gap-1.5">
                         <label className="text-xs text-slate-300 font-bold uppercase tracking-wider">Prioridade</label>
                         <div className="flex gap-2 w-full">
@@ -99,12 +128,12 @@ export const AddTaskModal = ({ isOpen, onClose, onAddTask }: AddTaskModalProps) 
                                     type="button"
                                     onClick={() => setPriority(prior)}
                                     className={`uppercase text-[11px] font-bold flex-1 text-center py-2.5 rounded-lg border transition-colors cursor-pointer ${priority === prior
-                                            ? prior === 'HIGH'
-                                                ? 'text-red-400 bg-red-400/20 border-red-400'
-                                                : prior === 'MEDIUM'
-                                                    ? 'bg-amber-500/20 text-amber-400 border-amber-500'
-                                                    : 'bg-emerald-500/20 text-emerald-400 border-emerald-500'
-                                            : "bg-slate-900/40 border-slate-700 text-slate-400 active:bg-slate-700"
+                                        ? prior === 'HIGH'
+                                            ? 'text-red-400 bg-red-400/20 border-red-400'
+                                            : prior === 'MEDIUM'
+                                                ? 'bg-amber-500/20 text-amber-400 border-amber-500'
+                                                : 'bg-emerald-500/20 text-emerald-400 border-emerald-500'
+                                        : "bg-slate-900/40 border-slate-700 text-slate-400 active:bg-slate-700"
                                         }`}
                                 >
                                     {prior === 'HIGH' && 'Alta'}
@@ -115,20 +144,25 @@ export const AddTaskModal = ({ isOpen, onClose, onAddTask }: AddTaskModalProps) 
                         </div>
                     </div>
 
-                    {/* DATA DE CONCLUSÃO */}
+
                     <div className="flex flex-col mb-2">
                         <label className="text-xs text-slate-300 font-bold uppercase tracking-wider mb-1" htmlFor="date">Data de Conclusão</label>
                         <input
                             id="date"
                             type="date"
-                            required
+                            min="2026-01-01"
                             value={date}
-                            onChange={(e) => setDate(e.target.value)}
-                            className="scheme-dark text-sm bg-slate-900 border border-slate-700 text-slate-100 leading-10 rounded-lg px-3 cursor-pointer focus:outline-hidden focus:border-yellow-500 transition-colors"
+                            onChange={(e) => {
+                                setDate(e.target.value)
+                                if (e.target.value) setDateHasError(false)
+                            }}
+                            className={`scheme-dark text-sm bg-slate-900 border  text-slate-100 leading-10 rounded-lg px-3 cursor-pointer focus:outline-hidden transition-colors ${
+                                dateHasError ? 'border-red-500 focus:border-red-500 bg-red-500/5' : 'border-slate-700 focus:border-yellow-500'
+                            }`}
                         />
                     </div>
 
-           
+
                     <div className="text-sm flex justify-between gap-3 pt-4 border-t border-slate-700/50 mt-2">
                         <button
                             type="button"
