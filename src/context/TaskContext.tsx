@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, type ReactNode } from 'react'
-
+import { toast } from 'sonner';
 interface Task {
     id: string | number
     title: string
@@ -91,6 +91,7 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
         if (hasConfirmed) {
             setTasks(tasks.filter(task => task.id !== id))
+            toast.success("Excluido com sucesso!")
         }
         
     }
