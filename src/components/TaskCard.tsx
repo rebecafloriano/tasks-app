@@ -13,7 +13,7 @@ export const TaskCard = ({ task }: TaskCardProps) => {
     const progressValue = task.progress ?? 0;
 
     const isExpired = task.date
-        ? new Date(`${task.date}T23:59:59`).getTime() < Date.now()
+        ? new Date(`${task.date.substring(0, 10)}T23:59:59`).getTime() < Date.now()
         : false;
 
     const getPriorityStyles = (priority: 'HIGH' | 'MEDIUM' | 'LOW') => {
