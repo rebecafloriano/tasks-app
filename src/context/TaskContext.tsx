@@ -87,7 +87,12 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
 
     const deleteTask = (id: string | number) => {
-        setTasks(tasks.filter(task => task.id !== id))
+        const hasConfirmed = window.confirm("Tens a certeza que queres eliminar esta tarefa?");
+
+        if (hasConfirmed) {
+            setTasks(tasks.filter(task => task.id !== id))
+        }
+        
     }
 
     return (
