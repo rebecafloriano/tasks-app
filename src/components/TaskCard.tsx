@@ -64,7 +64,7 @@ export const TaskCard = ({ task }: TaskCardProps) => {
                     <div className="max-w-[75%]">
                         {isExpired && task.progress === 100 ? (
                             <span className="text-slate-400">
-                                {task.date ? formatDate(task.date) : "Sem prazo"} <span className="text-emerald-500 font-medium">(Concluído com atrazo)</span>
+                                {task.date ? formatDate(task.date) : "Sem prazo"} <span className="text-emerald-500 font-medium">(Concluído com atraso)</span>
                             </span>
                         ) : (
                             <span className={isExpired && progressValue < 100 ? "text-red-400 font-medium animate-pulse" : "text-slate-500"}>
