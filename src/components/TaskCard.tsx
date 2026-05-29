@@ -8,7 +8,7 @@ interface TaskCardProps {
 }
 
 export const TaskCard = ({ task }: TaskCardProps) => {
-    const {plusProgress, minusProgress, deleteTask} = useTasks()
+    const { plusProgress, minusProgress, deleteTask } = useTasks()
 
     const progressValue = task.progress ?? 0;
 
@@ -62,12 +62,19 @@ export const TaskCard = ({ task }: TaskCardProps) => {
             <div className="mt-auto w-full">
                 <div className="flex justify-between items-end mb-1 text-xs text-slate-500">
                     <div className="max-w-[75%]">
-                        {isExpired && task.progress === 100 ? (
-                            <span className="text-slate-400">
-                                {task.date ? formatDate(task.date) : "Sem prazo"} <span className="text-emerald-500 font-medium">(Concluído com atraso)</span>
+                        {/* Se a tarefa está em 100%, ela está perfeita. Só mostra a data normal em verde */}
+                        {task.progress === 100 ? (
+                            <span className="text-emerald-500 font-medium">
+                                {task.date ? formatDate(task.date) : "Sem prazo"} (Concluído)
+                            </span>
+                        ) : isExpired ? (
+                            /* Se não está em 100% e o prazo já passou, aí sim mostra o alerta vermelho */
+                            <span className="text-red-400 font-medium animate-pulse">
+                                {task.date ? formatDate(task.date) : "Sem prazo"} (Atrasada)
                             </span>
                         ) : (
-                            <span className={isExpired && progressValue < 100 ? "text-red-400 font-medium animate-pulse" : "text-slate-500"}>
+                            /* Caso contrário, mostra a data cinzenta normal de uma tarefa que está dentro do prazo */
+                            <span className="text-slate-500">
                                 {task.date ? formatDate(task.date) : "Sem prazo"}
                             </span>
                         )}
