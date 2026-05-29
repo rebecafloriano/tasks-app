@@ -1,14 +1,16 @@
 import { useState } from "react"
 import { type Task } from "../types/taskProps"
 import { toast } from 'sonner'
+import { useTasks } from "../context/TaskContext"
 
 interface AddTaskModalProps {
     isOpen: boolean
     onClose: () => void
-    onAddTask: (task: Omit<Task, "id" | "progress">) => void
+
 }
 
-export const AddTaskModal = ({ isOpen, onClose, onAddTask }: AddTaskModalProps) => {
+export const AddTaskModal = ({ isOpen, onClose }: AddTaskModalProps) => {
+    const { addTask } = useTasks()
 
     const [title, setTitle] = useState<Task["title"]>("")
     const [category, setCategory] = useState<Task["category"]>("Frontend Task")
@@ -43,7 +45,7 @@ export const AddTaskModal = ({ isOpen, onClose, onAddTask }: AddTaskModalProps) 
             return
         }
 
-        onAddTask({ title: title.trim(), category, priority, date })
+        addTask({ title: title.trim(), category, priority, date })
 
         setTitle("")
         setCategory("Frontend Task")
@@ -156,9 +158,8 @@ export const AddTaskModal = ({ isOpen, onClose, onAddTask }: AddTaskModalProps) 
                                 setDate(e.target.value)
                                 if (e.target.value) setDateHasError(false)
                             }}
-                            className={`scheme-dark text-sm bg-slate-900 border  text-slate-100 leading-10 rounded-lg px-3 cursor-pointer focus:outline-hidden transition-colors ${
-                                dateHasError ? 'border-red-500 focus:border-red-500 bg-red-500/5' : 'border-slate-700 focus:border-yellow-500'
-                            }`}
+                            className={`scheme-dark text-sm bg-slate-900 border  text-slate-100 leading-10 rounded-lg px-3 cursor-pointer focus:outline-hidden transition-colors ${dateHasError ? 'border-red-500 focus:border-red-500 bg-red-500/5' : 'border-slate-700 focus:border-yellow-500'
+                                }`}
                         />
                     </div>
 
