@@ -1,18 +1,19 @@
-import type { CardProps } from "../types/taskProps"
+import { useTasks } from "../context/TaskContext";
 import { Plus, Minus, Trash2 } from 'lucide-react'
 import { formatDate } from "../utils/formatDate";
+import { type Task } from "../types/taskProps";
 
+interface TaskCardProps {
+    task: Task;
+}
 
-export const TaskCard = ({ task, plusProgress, minusProgress, onDelete }: CardProps & {
-    plusProgress: (id: string | number) => void
-    minusProgress: (id: string | number) => void
-    onDelete: (id: string | number) => void
-}) => {
+export const TaskCard = ({ task }: TaskCardProps) => {
+    const {plusProgress, minusProgress, deleteTask} = useTasks()
 
     const progressValue = task.progress ?? 0;
 
     const isExpired = task.date
-        ? new Date(task.date).setHours(23, 59, 59, 999) < Date.now()
+        ? new Date(`${task.date}T23:59:59`).getTime() < Date.now()
         : false;
 
     const getPriorityStyles = (priority: 'HIGH' | 'MEDIUM' | 'LOW') => {
@@ -45,7 +46,7 @@ export const TaskCard = ({ task, plusProgress, minusProgress, onDelete }: CardPr
                     <button
                         type="button"
                         className="absolute top-4 right-4 p-1.5 hover:bg-red-500/10 text-slate-500 hover:text-red-400 rounded-lg transition-colors cursor-pointer"
-                        onClick={() => onDelete(task.id)}
+                        onClick={() => deleteTask(task.id)}
                         title="Excluir tarefa"
                     >
                         <Trash2 size={18} />
