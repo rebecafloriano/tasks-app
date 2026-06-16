@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, type ReactNode } from 'react'
+import React, { createContext, useState, useEffect, type ReactNode } from 'react'
 import { toast } from 'sonner';
+
 interface Task {
     id: string | number
     title: string
@@ -17,7 +18,8 @@ interface TaskContextType {
     deleteTask: (id: string | number) => void
 }
 
-const TaskContext = createContext<TaskContextType | undefined>(undefined)
+// O export aqui é vital para o arquivo useTasks.ts funcionar!
+export const TaskContext = createContext<TaskContextType | undefined>(undefined)
 
 const dummyTasks: Task[] = [
     {
@@ -57,10 +59,14 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         return dummyTasks
     })
 
+    useEffect(() => {
+        localStorage.setItem('@TaskFlow:tasks', JSON.stringify(tasks))
+    }, [tasks])
+
     const addTask = (newTaskData: Omit<Task, "id" | "progress">) => {
         const finalTask: Task = {
             ...newTaskData,
-            id: crypto.randomUUID(),
+            id: String(Date.now()), // ID seguro anti-tela branca
             progress: 0
         }
         setTasks((prevTasks) => [finalTask, ...prevTasks])
@@ -80,7 +86,7 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setTasks(prevTasks => prevTasks.map(task => {
             if (task.id === id) {
                 const nextProgress = task.progress === 0 ? 0 : task.progress - 25
-                return {...task, progress: nextProgress}
+                return { ...task, progress: nextProgress }
             }
             return task
         }))
@@ -90,10 +96,9 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const hasConfirmed = window.confirm("Tens a certeza que queres eliminar esta tarefa?");
 
         if (hasConfirmed) {
-            setTasks(tasks.filter(task => task.id !== id))
-            toast.success("Excluido com sucesso!")
+            setTasks(prevTasks => prevTasks.filter(task => task.id !== id))
+            toast.success("Excluído com sucesso!")
         }
-        
     }
 
     return (
@@ -102,10 +107,3 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         </TaskContext.Provider>
     )
 }
-export const useTasks = () => {
-    const context = useContext(TaskContext);
-    if (!context) {
-        throw new Error('useTasks deve ser usado dentro de um TaskProvider');
-    }
-    return context;
-};

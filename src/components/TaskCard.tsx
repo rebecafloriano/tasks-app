@@ -1,4 +1,4 @@
-import { useTasks } from "../context/TaskContext";
+import { useTasks } from '../hooks/useTasks';
 import { Plus, Minus, Trash2 } from 'lucide-react'
 import { formatDate } from "../utils/formatDate";
 import { type Task } from "../types/taskProps";
@@ -18,31 +18,19 @@ export const TaskCard = ({ task }: TaskCardProps) => {
 
     const getPriorityStyles = (priority: 'HIGH' | 'MEDIUM' | 'LOW') => {
         switch (priority) {
-            case 'HIGH':
-                return 'text-red-400 bg-red-400/10 border-red-400'
-            case 'MEDIUM':
-                return 'text-amber-400 bg-yellow-400/10 border-amber-400'
-            case 'LOW':
-                return 'text-green-400 bg-green-400/10 border-green-400'
-            default:
-                return 'text-slate-600 bg-slate-400/10 border-slate-200'
+            case 'HIGH': return 'text-red-400 bg-red-400/10 border-red-400'
+            case 'MEDIUM': return 'text-amber-400 bg-yellow-400/10 border-amber-400'
+            case 'LOW': return 'text-green-400 bg-green-400/10 border-green-400'
+            default: return 'text-slate-600 bg-slate-400/10 border-slate-200'
         }
     }
 
     return (
-        <div className="relative border border-slate-800 bg-slate-950 p-5 rounded-xl hover:border-slate-700 hover:bg-slate-800/80 transition-all duration-200 flex flex-col justify-between min-h-55]">
-
+        <div className="relative border border-slate-800 bg-slate-950 p-5 rounded-xl hover:border-slate-700 hover:bg-slate-800/80 transition-all duration-200 flex flex-col justify-between min-h-[55px]">
             <div>
-
                 <div className="flex flex-wrap gap-2 items-center pr-8 mb-3">
-                    <span className="rounded-md border border-slate-800 py-1 px-2 bg-slate-900 font-semibold text-slate-400 text-[11px]">
-                        {task.category}
-                    </span>
-                    <span className={`rounded-md border py-1 px-2 font-bold text-[11px] uppercase ${getPriorityStyles(task.priority)}`}>
-                        {task.priority}
-                    </span>
-
-
+                    <span className="rounded-md border border-slate-800 py-1 px-2 bg-slate-900 font-semibold text-slate-400 text-[11px]">{task.category}</span>
+                    <span className={`rounded-md border py-1 px-2 font-bold text-[11px] uppercase ${getPriorityStyles(task.priority)}`}>{task.priority}</span>
                     <button
                         type="button"
                         className="absolute top-4 right-4 p-1.5 hover:bg-red-500/10 text-slate-500 hover:text-red-400 rounded-lg transition-colors cursor-pointer"
@@ -52,34 +40,21 @@ export const TaskCard = ({ task }: TaskCardProps) => {
                         <Trash2 size={18} />
                     </button>
                 </div>
-
-
-                <h3 className="font-semibold text-base mb-4 text-slate-100 line-clamp-2 pr-4">
-                    {task.title || "Tarefa Sem Título"}
-                </h3>
+                <h3 className="font-semibold text-base mb-4 text-slate-100 line-clamp-2 pr-4">{task.title || "Tarefa Sem Título"}</h3>
             </div>
 
             <div className="mt-auto w-full">
                 <div className="flex justify-between items-end mb-1 text-xs text-slate-500">
                     <div className="max-w-[75%]">
-                        {/* Se a tarefa está em 100%, ela está perfeita. Só mostra a data normal em verde */}
-                        {task.progress === 100 ? (
-                            <span className="text-emerald-500 font-medium">
-                                {task.date ? formatDate(task.date) : "Sem prazo"} (Concluído)
-                            </span>
+                        {progressValue === 100 ? (
+                            <span className="text-emerald-500 font-medium">{task.date ? formatDate(task.date) : "Sem prazo"} (Concluído)</span>
                         ) : isExpired ? (
-                            /* Se não está em 100% e o prazo já passou, aí sim mostra o alerta vermelho */
-                            <span className="text-red-400 font-medium animate-pulse">
-                                {task.date ? formatDate(task.date) : "Sem prazo"} (Atrasada)
-                            </span>
+                            <span className="text-red-400 font-medium animate-pulse">{task.date ? formatDate(task.date) : "Sem prazo"} (Atrasada)</span>
                         ) : (
-                            /* Caso contrário, mostra a data cinzenta normal de uma tarefa que está dentro do prazo */
-                            <span className="text-slate-500">
-                                {task.date ? formatDate(task.date) : "Sem prazo"}
-                            </span>
+                            <span className="text-slate-500">{task.date ? formatDate(task.date) : "Sem prazo"}</span>
                         )}
                     </div>
-                    <span className="font-bold text-slate-300">{task.progress}%</span>
+                    <span className="font-bold text-slate-300">{progressValue}%</span>
                 </div>
 
                 <div className="w-full h-1.5 rounded-2xl bg-slate-800 mb-4 overflow-hidden">
@@ -89,7 +64,6 @@ export const TaskCard = ({ task }: TaskCardProps) => {
                     />
                 </div>
 
-                {/* Botões de Ação Dinâmicos */}
                 <div className="flex gap-2 items-center w-full">
                     <button
                         onClick={() => minusProgress(task.id)}
@@ -109,7 +83,6 @@ export const TaskCard = ({ task }: TaskCardProps) => {
                     </button>
                 </div>
             </div>
-
         </div>
     )
 }

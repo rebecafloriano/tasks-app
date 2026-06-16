@@ -1,11 +1,12 @@
-import { useState } from 'react';
-import { useTasks } from './context/TaskContext';
+import { useState, useMemo } from 'react';
+import { useTasks } from './hooks/useTasks';
 import { Menu } from 'lucide-react';
 import { TaskCard } from './components/TaskCard';
 import { AddTaskModal } from './components/AddTaskModal';
 import { FilterSidebar } from './components/FilterSidebar';
 import { type FilterType } from './types/taskProps';
 import { Toaster } from 'sonner';
+
 
 export default function App() {
   const { tasks } = useTasks(); // Puxa apenas a lista global sincronizada
@@ -16,12 +17,14 @@ export default function App() {
 
   const countDone = tasks.filter(item => item.progress === 100).length;
 
-  const filteredTasks = tasks.filter(task => {
-    if (filter === 'DONE') return task.progress === 100;
-    if (filter === 'PENDING') return task.progress < 100;
-    if (filter === 'HIGH') return task.priority === 'HIGH';
-    return true;
-  });
+  const filteredTasks = useMemo(() => {
+    return tasks.filter(task => {
+      if (filter === 'DONE') return task.progress === 100;
+      if (filter === 'PENDING') return task.progress < 100;
+      if (filter === 'HIGH') return task.priority === 'HIGH';
+      return true;
+    });
+  }, [tasks, filter]);
 
   return (
     <div className="flex flex-col bg-slate-900 text-slate-100 font-sans min-h-dvh w-full">
